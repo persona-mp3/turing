@@ -10,5 +10,27 @@
   { "name": "com.github.persona.mp3.definitions.GenerateRequest",      "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
   { "name": "com.github.persona.mp3.definitions.GenerateRequest$Body", "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
   { "name": "com.github.persona.mp3.definitions.GenerateReply",        "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
-  { "name": "com.github.persona.mp3.definitions.GenerateReply$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true }
+  { "name": "com.github.persona.mp3.definitions.GenerateReply$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+
+  { "name": "com.github.persona.mp3.definitions.ReadRequest",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.ReadRequest$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+
+
+  { "name": "com.github.persona.mp3.definitions.ReadReply",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.ReadReply$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+
+
+  { "name": "com.github.persona.mp3.definitions.TopologyRequest",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.TopologyRequest$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+
+  { "name": "com.github.persona.mp3.definitions.TopologyReply",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.TopologyReply$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+
+
+  { "name": "com.github.persona.mp3.definitions.BroadcastRequest",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.BroadcastRequest$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+
+
+  { "name": "com.github.persona.mp3.definitions.BroadcastReply",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.BroadcastReply$Body",   "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true }
 ]

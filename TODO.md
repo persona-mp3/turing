@@ -1,6 +1,5 @@
 Challenge link: https://fly.io/dist-sys/1/
 ## Configurations
-prek
 pipeline
 README
 

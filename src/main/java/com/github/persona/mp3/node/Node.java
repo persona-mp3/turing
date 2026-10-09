@@ -4,14 +4,24 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.github.persona.mp3.definitions.BroadcastReply;
+import com.github.persona.mp3.definitions.BroadcastRequest;
 import com.github.persona.mp3.definitions.EchoReply;
 import com.github.persona.mp3.definitions.EchoRequest;
 import com.github.persona.mp3.definitions.GenerateReply;
 import com.github.persona.mp3.definitions.GenerateRequest;
 import com.github.persona.mp3.definitions.InitReply;
 import com.github.persona.mp3.definitions.InitRequest;
+import com.github.persona.mp3.definitions.ReadReply;
+import com.github.persona.mp3.definitions.ReadRequest;
+import com.github.persona.mp3.definitions.TopologyReply;
+import com.github.persona.mp3.definitions.TopologyRequest;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class Node {
@@ -27,6 +37,9 @@ public class Node {
 
     String assignedId = "";
     String line;
+
+    List<Integer> messageHistory = new ArrayList<>();
+    Map<String, List<String>> topology = new HashMap<>();
 
     try (BufferedReader stdout = new BufferedReader(new InputStreamReader(System.in))) {
 
@@ -73,6 +86,54 @@ public class Node {
                   .body(
                       GenerateReply.Body.builder()
                           .id(uuid)
+                          .msgId(reqBody.msgId)
+                          .inReplyTo(reqBody.msgId)
+                          .build())
+                  .build();
+
+          jsonReply = mapper.writeValueAsString(reply);
+        } else if (payloadType.equals("broadcast")) {
+          BroadcastRequest.Body reqBody = mapper.convertValue(body, BroadcastRequest.Body.class);
+          messageHistory.add(reqBody.message);
+          BroadcastReply reply =
+              BroadcastReply.builder()
+                  .src(assignedId)
+                  .dest(src)
+                  .body(
+                      BroadcastReply.Body.builder()
+                          .msgId(reqBody.msgId)
+                          .inReplyTo(reqBody.msgId)
+                          .build())
+                  .build();
+
+          jsonReply = mapper.writeValueAsString(reply);
+        } else if (payloadType.equals("read")) {
+          ReadRequest.Body reqBody = mapper.convertValue(body, ReadRequest.Body.class);
+          ReadReply reply =
+              ReadReply.builder()
+                  .src(assignedId)
+                  .dest(src)
+                  .body(
+                      ReadReply.Body.builder()
+                          .msgId(reqBody.msgId)
+                          .inReplyTo(reqBody.msgId)
+                          .messages(messageHistory)
+                          .build())
+                  .build();
+
+          jsonReply = mapper.writeValueAsString(reply);
+
+        } else if (payloadType.equals("topology")) {
+
+          TopologyRequest.Body reqBody = mapper.convertValue(body, TopologyRequest.Body.class);
+          topology.putAll(reqBody.topology);
+
+          TopologyReply reply =
+              TopologyReply.builder()
+                  .src(assignedId)
+                  .dest(src)
+                  .body(
+                      TopologyReply.Body.builder()
                           .msgId(reqBody.msgId)
                           .inReplyTo(reqBody.msgId)
                           .build())

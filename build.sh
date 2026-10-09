@@ -28,9 +28,6 @@ initial_build(){
 	echo ' [build.sh] rm node'
 	rm bin/node || true
 
-	echo " [build.sh] building native binary..."
-	echo " [builid.sh] native-image -jar target/turing-1.0-SNAPSHOT.jar bin/node"
-
 	mkdir -p bin/
 	native-image -jar target/turing-1.0-SNAPSHOT.jar bin/node
 }
@@ -38,17 +35,36 @@ initial_build(){
 
 
 echo_message(){
-	echo " [build.sh] starting maelstrom for echo message"
+	echo "
+
+
+			STARTING MAELSTROM: ECHO MESSAGE
+	"
 	echo "maelstrom test -w echo --bin ./bin/node --node-count 1 --time-limit 10"
 	maelstrom test -w echo --bin ./bin/node --node-count 1 --time-limit 10
 }
 
 
 generate_message(){
-	echo "  [build.sh] stating maelstrom for generate msg..."
+	echo "
+
+
+		STARTING MAELSTROM: GENERATE MSG
+	"
 	maelstrom test -w unique-ids --bin ./bin/node --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition
+}
+
+broadcast_message() {
+
+	echo "
+
+
+		RUNNING MAELSTROM: BROADCAST MESSAGES
+	"
+	maelstrom test -w broadcast --bin ./bin/node --node-count 1 --time-limit 20 --rate 10
 }
 
 initial_build
 echo_message
 generate_message
+broadcast_message
