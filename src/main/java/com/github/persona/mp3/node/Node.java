@@ -1,9 +1,13 @@
 package com.github.persona.mp3.node;
 
 import com.github.persona.mp3.definitions.EchoRequest;
+import com.github.persona.mp3.definitions.GenerateReply;
 import com.github.persona.mp3.definitions.EchoReply;
 import com.github.persona.mp3.definitions.InitRequest;
 import com.github.persona.mp3.definitions.InitReply;
+import com.github.persona.mp3.definitions.GenerateRequest;
+import java.util.UUID;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
@@ -49,9 +53,24 @@ public class Node {
 					InitReply reply = new InitReply(assignedId, src, replyBody);
 
 					jsonReply = mapper.writeValueAsString(reply);
+				} else if (payloadType.equals("generate")) {
+					GenerateRequest.Body reqBody = mapper.convertValue(body,
+							GenerateRequest.Body.class);
+
+					String uuid = UUID.randomUUID().toString();
+					GenerateReply reply = GenerateReply.builder()
+							.src(assignedId).dest(src)
+							.body(GenerateReply.Body.builder()
+									.id(uuid)
+									.msgId(reqBody.msgId)
+									.inReplyTo(reqBody.msgId).build())
+							.build();
+
+					jsonReply = mapper.writeValueAsString(reply);
 				} else {
 					throw new Exception(
-							String.format("Unexpected payload recvd\n %s\n, payloadType: %s\n ", payload.toPrettyString(), payloadType));
+							String.format("Unexpected payload recvd\n %s\n, payloadType: %s\n ", payload.toPrettyString(),
+									payloadType));
 				}
 
 				System.out.println(jsonReply);

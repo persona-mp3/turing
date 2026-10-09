@@ -1,28 +1,54 @@
 #!/usr/env bin
 set -eo pipefail
 
-mvn clean package
 echo "
 		BUILD SCRIPT
 "
-echo " Testing built jar file..."
 
-MSG='{"src":"c1","dest":"n1","body":{"type":"init","msg_id":1,"node_id":"n1","node_ids":["n1"]}}'
-printf '%s | java -jar target/turing-1.0-SNAPSHOT.jar\033[0m\n' "$MSG"
 
-echo '{"src":"c1","dest":"n1","body":{"type":"init","msg_id":1,"node_id":"n1","node_ids":["n1"]}}' | java -jar target/turing-1.0-SNAPSHOT.jar
-echo "clearing stale binaries"
+initial_build(){
+	mvn clean package
+	echo "	[build.sh] testing built jar file against init msg"
+	MSG='{"src":"c1","dest":"n1","body":{"type":"init","msg_id":1,"node_id":"n1","node_ids":["n1"]}}'
+	printf '%s | java -jar target/turing-1.0-SNAPSHOT.jar\033[0m\n' "$MSG"
 
-# remove stale binaries
-echo 'rm node' 
-rm node || true
+	echo '{"src":"c1","dest":"n1","body":{"type":"init","msg_id":1,"node_id":"n1","node_ids":["n1"]}}' | java -jar target/turing-1.0-SNAPSHOT.jar
 
-echo " Building native binary..."
-echo "native-image -jar target/turing-1.0-SNAPSHOT.jar node
-"
 
-native-image -jar target/turing-1.0-SNAPSHOT.jar node
+	echo " [build.sh] testing against init and generate message..."
+	
+	INIT_MSG='{"src":"c1","dest":"n1","body":{"type":"init","msg_id":1,"node_id":"n1","node_ids":["n1"]}}'
+	GEN_MSG='{"src":"c1","dest":"n1","body":{"type":"generate","msg_id":1}}'
 
-echo " starting maelstrom..."
-echo "maelstrom test -w echo --bin ./node --node-count 1 --time-limit 10"
-maelstrom test -w echo --bin ./node --node-count 1 --time-limit 10
+	# TODO: test stdout 
+	printf '%s\n%s\n' "$INIT_MSG" "$GEN_MSG" | java -jar target/turing-1.0-SNAPSHOT.jar
+
+
+	echo " [build.sh] clearing stale binaries"
+	echo ' [build.sh] rm node' 
+	rm bin/node || true
+
+	echo " [build.sh] building native binary..."
+	echo " [builid.sh] native-image -jar target/turing-1.0-SNAPSHOT.jar bin/node"
+
+	mkdir -p bin/
+	native-image -jar target/turing-1.0-SNAPSHOT.jar bin/node
+}
+
+
+
+echo_message(){
+	echo " [build.sh] starting maelstrom for echo message"
+	echo "maelstrom test -w echo --bin ./bin/node --node-count 1 --time-limit 10"
+	maelstrom test -w echo --bin ./bin/node --node-count 1 --time-limit 10
+}
+
+
+generate_message(){
+	echo "  [build.sh] stating maelstrom for generate msg..."
+	maelstrom test -w unique-ids --bin ./bin/node --time-limit 30 --rate 1000 --node-count 3 --availability total --nemesis partition
+}
+
+initial_build
+echo_message
+generate_message

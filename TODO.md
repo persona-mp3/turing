@@ -3,7 +3,6 @@ Challenge link: https://fly.io/dist-sys/1/
 prek
 pipeline
 README
-maelstrom
 
 
 # Protocol
