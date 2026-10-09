@@ -1,57 +1,65 @@
 package com.github.persona.mp3.node;
 
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.io.IOException;
-import java.io.InputStream;
+import com.github.persona.mp3.definitions.EchoRequest;
+import com.github.persona.mp3.definitions.EchoReply;
+import com.github.persona.mp3.definitions.InitRequest;
+import com.github.persona.mp3.definitions.InitReply;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.databind.JsonNode;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class Node {
 	int listenPort;
-	String id;
 
 	public Node(int listenPort) {
 		this.listenPort = listenPort;
 	}
 
-	public void start() throws IOException {
+	public void start() throws Exception {
+		ObjectMapper mapper = JsonMapper.builder().disable(JsonParser.Feature.AUTO_CLOSE_SOURCE).build();
+
+		String assignedId = "";
+		String line;
+
 		try (
-				ServerSocket ss = new ServerSocket(this.listenPort)) {
+				BufferedReader stdout = new BufferedReader(new InputStreamReader(System.in))) {
 
-			while (true) {
-				Socket conn = ss.accept();
-				conn.setSoTimeout(10_000); // 10 seconds
-				System.out.printf("accepted new connection from %s\n", conn.getInetAddress());
+			while ((line = stdout.readLine()) != null) {
+				JsonNode payload = mapper.readTree(line);
 
-				Thread vt = Thread.ofVirtual().start(() -> {
-					handleConn(conn);
-				});
+				String src = payload.path("src").asText();
+				JsonNode body = payload.get("body");
+				String payloadType = body.path("type").asText();
 
-				vt.run();
+				String jsonReply;
+				if (payloadType.equals("echo")) {
+					EchoRequest.Body requestBody = mapper.convertValue(body, EchoRequest.Body.class);
+					EchoReply.Body replyBody = new EchoReply.Body(requestBody.msgId, requestBody.msgId, requestBody.echo);
+					EchoReply reply = new EchoReply(assignedId, src, replyBody);
+					jsonReply = mapper.writeValueAsString(reply);
+
+				} else if (payloadType.equals("init")) {
+					InitRequest.Body requestBody = mapper.convertValue(body, InitRequest.Body.class);
+					assignedId = requestBody.nodeId;
+
+					InitReply.Body replyBody = new InitReply.Body(requestBody.msgId);
+					InitReply reply = new InitReply(assignedId, src, replyBody);
+
+					jsonReply = mapper.writeValueAsString(reply);
+				} else {
+					throw new Exception(
+							String.format("Unexpected payload recvd\n %s\n, payloadType: %s\n ", payload.toPrettyString(), payloadType));
+				}
+
+				System.out.println(jsonReply);
+				System.out.flush();
+
 			}
-		} catch (SocketException err) {
-			System.out.println("error occured for server");
-			err.printStackTrace();
+
 		}
 	}
 
-	static void handleConn(Socket conn) {
-		String addr = conn.getLocalAddress().toString();
-		try (
-				InputStream stream = conn.getInputStream();) {
-			while (!conn.isClosed() && conn.isConnected()) {
-				// blocking
-				stream.read();
-			}
-
-		} catch (SocketTimeoutException err) {
-			System.out.println("timeout reached from " + addr);
-		} catch (Exception err) {
-			System.out.println("error occured while handling connection");
-			err.printStackTrace();
-			return;
-
-		}
-	}
 }

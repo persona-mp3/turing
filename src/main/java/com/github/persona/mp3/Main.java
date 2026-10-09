@@ -5,8 +5,6 @@ import com.github.persona.mp3.node.Node;
 // Entry point to application
 public class Main {
 	public static void main(String[] args) {
-		System.out.println("turing application running");
-
 		Node node = new Node(3000);
 		try {
 			node.start();

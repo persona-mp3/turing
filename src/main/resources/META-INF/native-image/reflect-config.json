@@ -1,0 +1,10 @@
+[
+  { "name": "com.github.persona.mp3.definitions.InitRequest",       "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.InitRequest$Body",  "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.InitReply",         "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.InitReply$Body",    "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.EchoRequest",       "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.EchoRequest$Body",  "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.EchoReply",         "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true },
+  { "name": "com.github.persona.mp3.definitions.EchoReply$Body",    "allDeclaredConstructors": true, "allDeclaredFields": true, "allDeclaredMethods": true }
+]
