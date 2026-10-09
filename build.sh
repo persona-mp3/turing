@@ -16,16 +16,16 @@ initial_build(){
 
 
 	echo " [build.sh] testing against init and generate message..."
-	
+
 	INIT_MSG='{"src":"c1","dest":"n1","body":{"type":"init","msg_id":1,"node_id":"n1","node_ids":["n1"]}}'
 	GEN_MSG='{"src":"c1","dest":"n1","body":{"type":"generate","msg_id":1}}'
 
-	# TODO: test stdout 
+	# TODO: test stdout
 	printf '%s\n%s\n' "$INIT_MSG" "$GEN_MSG" | java -jar target/turing-1.0-SNAPSHOT.jar
 
 
 	echo " [build.sh] clearing stale binaries"
-	echo ' [build.sh] rm node' 
+	echo ' [build.sh] rm node'
 	rm bin/node || true
 
 	echo " [build.sh] building native binary..."
