@@ -7,3 +7,4 @@ target/
 .settings/
 store
 bin/
+dependency-reduced-pom.xml
