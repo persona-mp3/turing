@@ -1,5 +1,5 @@
-#!/usr/env bin
-set -eo pipefail
+#!/usr/bin/env bash
+set -e
 
 echo "
 		BUILD SCRIPT
